@@ -1,0 +1,41 @@
+version: '3.5'
+
+networks:
+  couchbase-net:
+    name: couchbase-net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.101.0/24
+
+volumes:
+  couchbase1:
+
+services:
+  couchbase:
+    container_name: couchbase
+    image: couchbase:community
+    volumes:
+      - type: volume
+        source: couchbase1
+        target: /opt/couchbase1/var
+    networks:
+      couchbase-net:
+        ipv4_address: 172.16.101.11
+    ports:
+      - 8091:8091
+      - 8092:8092
+      - 8093:8093
+      - 8094:8094
+      - 11210:11210
+    ulimits:
+      nproc: 65535
+      core:
+        soft: 100000000
+        hard: 100000000
+      memlock:
+        soft: 100000000
+        hard: 100000000
+      nofile:
+        soft: 40960
+        hard: 40960

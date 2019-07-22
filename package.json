@@ -1,0 +1,56 @@
+{
+  "name": "@scalio/nest-couchbase",
+  "description": "Couchbase module for Nest framework",
+  "version": "0.1.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "prebuild": "yarn build:clean",
+    "build:clean": "cd dist && rm -rf `ls | grep -v \"LICENSE\\|package.json\\|README.md\"`",
+    "build": "npx tsc -b tsconfig.build.json",
+    "commit": "npx git-cz",
+    "lint": "npx tslint 'src/*.ts'",
+    "format": "npx pretty-quick --pattern 'src/**/*.ts'",
+    "test": "npx jest -c=jest.config.js test/ --verbose --runInBand"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn format --staged && yarn lint",
+      "commit-msg": "npx validate-commit-msg"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    },
+    "validate-commit-msg": {
+      "types": "conventional-commit-types",
+      "helpMessage": "Use \"yarn commit\" instead"
+    }
+  },
+  "dependencies": {
+    "@nestjs/common": "6.5.2",
+    "@nestjs/core": "6.5.2",
+    "@nestjs/platform-express": "6.5.2",
+    "@nestjs/testing": "6.5.2",
+    "@types/jest": "24.0.15",
+    "@types/node": "12.6.2",
+    "@zmotivat0r/o0": "^1.0.2",
+    "class-transformer": "^0.2.3",
+    "commitizen": "3.1.1",
+    "coveralls": "3.0.5",
+    "cz-conventional-changelog": "2.1.0",
+    "husky": "2.7.0",
+    "jest": "24.8.0",
+    "prettier": "1.18.2",
+    "pretty-quick": "1.11.1",
+    "reflect-metadata": "0.1.13",
+    "rxjs": "6.5.2",
+    "ts-jest": "24.0.2",
+    "ts-node": "8.3.0",
+    "tslint": "5.18.0",
+    "tslint-config-prettier": "1.18.0",
+    "typescript": "3.5.3",
+    "validate-commit-msg": "2.14.0"
+  }
+}
