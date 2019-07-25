@@ -1,3 +1,4 @@
+import { promisify } from 'util';
 import { Bucket } from 'couchbase';
 import * as BucketClass from 'couchbase/lib/bucket';
 
@@ -17,6 +18,14 @@ export function CouchbaseRepositoryMixin<T>(bucket: Bucket, entity: T): Reposito
   }
 
   Object.assign(CouchbaseRepository.prototype, BucketClass.prototype);
+  Object.getOwnPropertyNames(BucketClass.prototype).forEach((name: string) => {
+    if (
+      name !== 'constructor' &&
+      typeof CouchbaseRepository.prototype[name] === 'function'
+    ) {
+      CouchbaseRepository.prototype[name] = promisify(BucketClass.prototype[name]);
+    }
+  });
   Object.defineProperty(CouchbaseRepository, 'name', {
     writable: false,
     value: `Generated${(entity as any).name}CouchbaseRepository`,

@@ -44,7 +44,7 @@ export class CouchbaseConnectionFactory {
     return new Promise((resolve, reject) => {
       const bucket = cluster.openBucket.bind(cluster)(name, (err: Error) => {
         if (err) {
-          logger.error(err);
+          // logger.error(err);
           reject(err);
         }
 

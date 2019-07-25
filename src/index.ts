@@ -22,9 +22,13 @@ export * from './couchbase';
 
 //   const cluster = await CouchbaseConnectionFactory.createCluster(config);
 //   const repositoryFactory = CouchbaseRepositoryFactory.create(cluster, config);
-//   const repository = await repositoryFactory.create(TestEntity);
+//   const repository = await repositoryFactory.create<TestEntity>(TestEntity);
 
-//   console.log(repository as any);
+//   try {
+//     const res = await repository.get('test');
+//   } catch (error) {
+//     console.log(error);
+//   }
 // }
 
 // test();
