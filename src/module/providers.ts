@@ -6,27 +6,22 @@ import {
   CouchbaseRepositoryFactory,
   CouchbaseConnectionConfig,
 } from '../couchbase';
-import { getClusterToken, getRepositoryFactoryToken, getRepositoryToken } from './utils';
+import { getConnectionToken, getRepositoryToken } from './utils';
 
 export const createCouchbaseConnectionProviders = (
   config: CouchbaseConnectionConfig,
 ): Provider[] => [
   {
-    provide: getClusterToken(),
-    useFactory: async () => CouchbaseConnectionFactory.createCluster(config),
-  },
-  {
-    provide: getRepositoryFactoryToken(),
-    useFactory: (cluster: Cluster) => CouchbaseRepositoryFactory.create(cluster, config),
-    inject: [getClusterToken()],
+    provide: getConnectionToken(),
+    useFactory: async () => CouchbaseConnectionFactory.create(config),
   },
 ];
 
 export const createCouchbaseRepositoryProvider = (entity: Function): Provider => ({
   provide: getRepositoryToken(entity),
-  useFactory: async (repositoryFactory: CouchbaseRepositoryFactory) =>
-    repositoryFactory.create(entity),
-  inject: [getRepositoryFactoryToken()],
+  useFactory: async (conn: CouchbaseConnectionFactory) =>
+    CouchbaseRepositoryFactory.create(conn, entity),
+  inject: [getConnectionToken()],
 });
 
 export const createCouchbaseProviders = (entities: Function[]): Provider[] =>

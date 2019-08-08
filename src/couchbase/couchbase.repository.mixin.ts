@@ -1,7 +1,7 @@
-import { promisify } from 'util';
 import { Bucket } from 'couchbase';
 import * as BucketClass from 'couchbase/lib/bucket';
 
+import { promisify, flattenPromise } from '../utils';
 import { Repository } from './interfaces';
 
 export function CouchbaseRepositoryMixin<T>(bucket: Bucket, entity: T): Repository<T> {
@@ -11,10 +11,6 @@ export function CouchbaseRepositoryMixin<T>(bucket: Bucket, entity: T): Reposito
     constructor() {
       this.entity = entity;
     }
-
-    private get base(): Repository<T> {
-      return this as any;
-    }
   }
 
   Object.assign(CouchbaseRepository.prototype, BucketClass.prototype);
@@ -23,7 +19,9 @@ export function CouchbaseRepositoryMixin<T>(bucket: Bucket, entity: T): Reposito
       name !== 'constructor' &&
       typeof CouchbaseRepository.prototype[name] === 'function'
     ) {
-      CouchbaseRepository.prototype[name] = promisify(BucketClass.prototype[name]);
+      const method = promisify(BucketClass.prototype[name], bucket);
+      CouchbaseRepository.prototype[name] = method;
+      CouchbaseRepository.prototype[`${name}Flat`] = flattenPromise(method);
     }
   });
   Object.defineProperty(CouchbaseRepository, 'name', {

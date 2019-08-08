@@ -1,59 +1,95 @@
-import { oO } from '@zmotivat0r/o0';
-import { Cluster } from 'couchbase';
-
 import { CouchbaseConnectionFactory } from '../../src/couchbase/couchbase.connection.factory';
-import { config } from '../../test/__stubs__';
+import { sleep } from '../../src/utils';
+import { config, bucketOptions } from '../__stubs__';
 
 describe('#couchbase', () => {
   describe('#CouchbaseConnectionFactory', () => {
-    describe('#createCluster', () => {
+    it('should be defined', () => {
+      expect(CouchbaseConnectionFactory).toBeDefined();
+    });
+
+    describe('#create', () => {
       it('should be defined', () => {
-        expect(CouchbaseConnectionFactory.createCluster).toBeDefined();
+        expect(CouchbaseConnectionFactory.create).toBeDefined();
       });
-      it('should return cluster object', async () => {
-        const [_, cluster] = await oO(CouchbaseConnectionFactory.createCluster(config));
-        expect(cluster).toBeDefined();
-        expect(cluster).toHaveProperty('auther');
+      it('should create an instance', async () => {
+        const conn = await CouchbaseConnectionFactory.create(config);
+        expect(conn).toBeInstanceOf(CouchbaseConnectionFactory);
       });
-      it('should return mocked cluster object', async () => {
-        const [_, cluster] = await oO(
-          CouchbaseConnectionFactory.createCluster({ ...config, mock: true }),
-        );
-        expect(cluster).toBeDefined();
-        expect(cluster).toHaveProperty('dsnObj');
+      it('should create an instance with mock', async () => {
+        const conn = await CouchbaseConnectionFactory.create({ ...config, mock: true });
+        expect(conn).toBeInstanceOf(CouchbaseConnectionFactory);
       });
     });
 
-    describe('#getBucket', () => {
-      let cluster: Cluster;
+    describe('#methods', () => {
+      let conn: CouchbaseConnectionFactory;
+      let mocked: CouchbaseConnectionFactory;
+
+      async function removeBuckets() {
+        const [_, buckets] = await conn.listBuckets();
+        if (buckets && buckets.length) {
+          for (let i = 0; i < buckets.length; i++) {
+            await conn.removeBucket(buckets[0].name);
+          }
+        }
+      }
 
       beforeAll(async () => {
-        cluster = await CouchbaseConnectionFactory.createCluster(config);
+        conn = await CouchbaseConnectionFactory.create(config);
+        mocked = await CouchbaseConnectionFactory.create({ ...config, mock: true });
+        await removeBuckets();
       });
 
-      it('should be defined', () => {
-        expect(CouchbaseConnectionFactory.getBucket).toBeDefined();
+      afterAll(async () => {
+        await removeBuckets();
       });
-      it('should throw an error', async () => {
-        const [err] = await oO(
-          CouchbaseConnectionFactory.getBucket(cluster, { ...config, bucket: 'invalid' }),
-        );
-        expect(err).toBeInstanceOf(Error);
+
+      describe('#createBucket', () => {
+        it('should create a bucket', async () => {
+          const [err, ok] = await conn.createBucket(config.bucket, bucketOptions);
+          expect(err).toBeUndefined();
+          expect(ok).toBe(true);
+          await sleep(3500);
+        });
+        it('should return an error', async () => {
+          const [err, _] = await conn.createBucket(config.bucket, bucketOptions);
+          expect(err).toBeInstanceOf(Error);
+        });
       });
-      it('should return bucket object', async () => {
-        const [_, bucket] = await oO(
-          CouchbaseConnectionFactory.getBucket(cluster, config),
-        );
-        expect(bucket).toBeDefined();
-        expect((bucket as any)._name).toBe('test');
-        bucket.disconnect();
+
+      describe('#listBuckets', () => {
+        it('should return an array of buckets', async () => {
+          const [_, buckets] = await conn.listBuckets();
+          expect(Array.isArray(buckets)).toBe(true);
+        });
       });
-      it('should return mocked bucket object', async () => {
-        const [_, bucket] = await oO(
-          CouchbaseConnectionFactory.getBucket(cluster, { ...config, mock: true }),
-        );
-        expect(bucket).toBeDefined();
-        expect((bucket as any)._name).toBe('default');
+
+      describe('#getBucket', () => {
+        it('should return an error', async () => {
+          const [err, _] = await conn.getBucket('invalid');
+          expect(err).toBeInstanceOf(Error);
+        });
+        it('should return a bucket', async () => {
+          const [_, bucket] = await conn.getBucket(config.bucket);
+          expect(bucket).toBeDefined();
+          bucket.disconnect();
+        });
+        it('should return a bucket with mock', async () => {
+          const [_, bucket] = await mocked.getBucket(config.bucket);
+          expect(bucket).toBeDefined();
+        });
+      });
+
+      describe('#removeBucket', () => {
+        it('should return an error', async () => {
+          const [err, _] = await conn.removeBucket('invalid');
+          expect(err).toBeInstanceOf(Error);
+        });
+        it('should remove a bucket', async () => {
+          const [_, ok] = await conn.removeBucket(config.bucket);
+          expect(ok).toBe(true);
+        });
       });
     });
   });

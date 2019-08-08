@@ -3,7 +3,7 @@ import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 
 import { CouchbaseModule } from '../../src/module/couchbase.module';
-import { getConnectionToken } from '../../src/module/utils';
+import { getClusterToken } from '../../src/module/utils';
 
 describe('#module', () => {
   describe('#CouchbaseModule', () => {
@@ -19,11 +19,13 @@ describe('#module', () => {
     });
 
     afterAll(async () => {
-      app.close();
+      await app.close();
     });
 
     it('should get bucket object', () => {
-      const bucket = app.get<Bucket>(getConnectionToken());
+      const bucket = app.get<Bucket>(getClusterToken());
+      console.log(bucket);
+
       expect(bucket).toBeDefined();
       expect((bucket as any).storage).toBeDefined();
       console.log(bucket);

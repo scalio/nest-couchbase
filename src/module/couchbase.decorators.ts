@@ -1,5 +1,8 @@
 import { Inject } from '@nestjs/common';
 
-import { getClusterToken } from './utils';
+import { getConnectionToken, getRepositoryToken } from './utils';
 
-// export const InjectConnection = (): ParameterDecorator => Inject(getConnectionToken());
+export const InjectRepository = (entity: Function): ParameterDecorator =>
+  Inject(getRepositoryToken(entity));
+
+export const InjectConnection = (): ParameterDecorator => Inject(getConnectionToken());
