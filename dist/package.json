@@ -29,6 +29,8 @@
     "name": "Michael Yali",
     "email": "mihon4ik@gmail.com"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@zmotivat0r/o0": "1.0.2"
+  },
   "peerDependencies": {}
 }
