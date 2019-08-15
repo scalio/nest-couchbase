@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "prebuild": "yarn build:clean",
-    "build:clean": "cd dist && rm -rf `ls | grep -v \"LICENSE\\|package.json\\|README.md\"`",
+    "build:clean": "cd dist && rm -rf `ls | grep -v \"LICENSE\\|package.json\\|README.md\\|.npmrc\"`",
     "build": "npx tsc -b tsconfig.build.json",
     "commit": "npx git-cz",
     "lint": "npx tslint 'src/*.ts'",
