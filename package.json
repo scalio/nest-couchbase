@@ -1,5 +1,5 @@
 {
-  "name": "@scalio/nest-couchbase",
+  "name": "@scalio-oss/nest-couchbase",
   "description": "Couchbase module for Nest framework",
   "version": "0.1.0",
   "license": "MIT",
