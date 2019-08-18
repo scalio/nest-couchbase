@@ -92,6 +92,6 @@ Created by [@zMotivat0r](https://github.com/zMotivat0r) @ [Scalio](https://scal.
 <p align="center">
     <br/>
     <a href="https://scal.io/">
-        <img src="https://raw.githubusercontent.com/scalio/bazel-nestjs-starter/master/readme-assets/scalio.png"/>
+        <img src="https://raw.githubusercontent.com/scalio/bazel-status/master/assets/scalio-logo.svg?sanitize=true"/>
     </a>
 </p>
