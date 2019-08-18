@@ -1,6 +1,7 @@
 import { Module, DynamicModule } from '@nestjs/common';
 
 import { CouchbaseConnectionConfig } from '../couchbase';
+import { CouchbaseModuleAsyncOptions } from './interfaces';
 import { CouchbaseCoreModule } from './couchbase-core.module';
 import { createCouchbaseProviders } from './providers';
 
@@ -10,6 +11,13 @@ export class CouchbaseModule {
     return {
       module: CouchbaseModule,
       imports: [CouchbaseCoreModule.forRoot(config)],
+    };
+  }
+
+  static forRootAsync(options: CouchbaseModuleAsyncOptions): DynamicModule {
+    return {
+      module: CouchbaseModule,
+      imports: [CouchbaseCoreModule.forRootAsync(options)],
     };
   }
 
