@@ -80,6 +80,7 @@ jobs:
     - *restore_node_modules
     - run: yarn --frozen-lockfile
     - *save_node_modules
+    - run: yarn lint
     - run:
         name: init couchbase
         command: |
@@ -91,4 +92,3 @@ jobs:
                -d 'password=couchbase&username=couchbase&port=SAME'
     - run: yarn test:e2e
     - run: yarn build
-    - run: yarn lint
