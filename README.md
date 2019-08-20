@@ -1,7 +1,12 @@
-## Description
+![Couchbase for Nest](https://raw.githubusercontent.com/scalio/nest-couchbase/master/scalio-nc.svg?sanitize=true)
 
-The [Couchbase](https://www.couchbase.com/) module for Nest framework
+<h1 align="center">Nest Couchbase</h1>
 
+<p align="center">
+  A <a href="https://www.couchbase.com/">Couchbase</a> module for <a href="https://nestjs.com/">NestJS</a>
+</p>
+
+&nbsp;
 ## Installation
 
 ```bash
