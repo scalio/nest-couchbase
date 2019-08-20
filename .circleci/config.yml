@@ -1,0 +1,94 @@
+references:
+  master_only: &master_only
+    filters:
+      branches:
+        only: master
+  versions_only: &versions_only
+    filters:
+      tags:
+        only: /^v.*/
+      branches:
+        ignore: /.*/
+  not_master_branch: &not_master_branch
+    filters:
+      branches:
+        ignore: master
+
+  npm_cache_key: &npm_cache_key
+    v1-dependency-npm-{{ checksum "yarn.lock" }}
+  npm_backup_cache_key: &npm_backup_cache_key
+    v1-dependency-npm
+
+  restore_node_modules: &restore_node_modules
+    restore_cache:
+      name: Restore node_modules from cache
+      keys:
+      - *npm_cache_key
+      - *npm_backup_cache_key
+
+  save_node_modules: &save_node_modules
+    save_cache:
+      name: Save node_modules to cache
+      key: *npm_cache_key
+      paths:
+      - node_modules
+
+version: 2
+
+workflows:
+  version: 2
+  # every commit to master is checked
+  master_lint_test_build:
+    jobs:
+    - lint_test_build:
+        <<: *master_only
+  # every version (tagged commit) is published
+  publish:
+    jobs:
+    - publish:
+        <<: *versions_only
+        context: scalio-npm-registry
+  # every commit to branch which has PR is checked (CircleCI option 'Only build Pull Requests' should be enabled)
+  premerge_check:
+    jobs:
+    - lint_test_build:
+        <<: *not_master_branch
+
+jobs:
+
+  publish:
+    docker:
+    - image: node:12
+    steps:
+    - checkout
+    - *restore_node_modules
+    - run: yarn --frozen-lockfile
+    - *save_node_modules
+    - run: yarn build
+    - run:
+        name: configure access to NPM registry
+        command: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" >> ~/.npmrc
+    - run: yarn publish --new-version ${CIRCLE_TAG#v} dist
+
+  lint_test_build:
+    docker:
+    - image: node:12
+    - image: couchbase:community
+    steps:
+    - checkout
+    - *restore_node_modules
+    - run: yarn --frozen-lockfile
+    - *save_node_modules
+    - run:
+        name: init couchbase
+        command: |
+          curl http://localhost:8091/node/controller/setupServices \
+               -d 'services=kv%2Cn1ql%2Cindex%2Cfts'
+          curl http://localhost:8091/nodes/self/controller/settings \
+               -d 'path=%2Fopt%2Fcouchbase%2Fvar%2Flib%2Fcouchbase%2Fdata&index_path=%2Fopt%2Fcouchbase%2Fvar%2Flib%2Fcouchbase%2Fdata'
+          curl http://localhost:8091/settings/web \
+               -d 'password=couchbase&username=couchbase&port=SAME'
+    - run: yarn test:e2e
+    - run: yarn build
+    - run: yarn lint
