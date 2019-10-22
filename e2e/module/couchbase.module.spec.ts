@@ -26,12 +26,12 @@ describe('#module', () => {
     beforeAll(async () => {
       conn = await CouchbaseConnectionFactory.create(config);
       await removeBuckets();
-      await conn.createBucket(config.bucket, bucketOptions);
+      await conn.createBucket(config.defaultBucket.name, bucketOptions);
       await sleep(3500);
     });
 
     afterAll(async () => {
-      const [_, bucket] = await conn.getBucket(config.bucket);
+      const [_, bucket] = await conn.getBucket(config.defaultBucket.name);
       bucket.disconnect();
       await removeBuckets();
     });

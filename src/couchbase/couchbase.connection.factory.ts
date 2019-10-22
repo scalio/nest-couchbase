@@ -23,10 +23,10 @@ export class CouchbaseConnectionFactory {
     return conn;
   }
 
-  async getBucket(name: string): Promise<[Error, Bucket]> {
+  async getBucket(name: string, password?: string): Promise<[Error, Bucket]> {
     return this.config.mock
       ? [undefined, this.cluster.openBucket()]
-      : await this.openBucket(name);
+      : await this.openBucket(name, password);
   }
 
   async createBucket(
@@ -64,7 +64,7 @@ export class CouchbaseConnectionFactory {
     }
   }
 
-  private async openBucket(name: string): Promise<[Error, Bucket]> {
+  private async openBucket(name: string, password?: string): Promise<[Error, Bucket]> {
     /* istanbul ignore if */
     if (this.buckets[name]) {
       return [undefined, this.buckets[name]];
@@ -75,6 +75,7 @@ export class CouchbaseConnectionFactory {
         new Promise((resolve, reject) => {
           const bucket = this.cluster.openBucket.bind(this.cluster)(
             name,
+            password,
             (err: Error) => {
               if (err) {
                 reject(err);

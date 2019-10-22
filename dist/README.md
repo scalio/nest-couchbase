@@ -1,6 +1,12 @@
-## Description
+![Couchbase for Nest](https://raw.githubusercontent.com/scalio/nest-couchbase/master/scalio-nc.svg?sanitize=true)
 
-The [Couchbase](https://www.couchbase.com/) module for Nest framework
+<h1 align="center">NestJS Couchbase</h1>
+
+<p align="center">
+  A <a href="https://www.couchbase.com/">Couchbase</a> module for <a href="https://nestjs.com/">NestJS</a>
+</p>
+
+&nbsp;
 
 ## Installation
 
@@ -23,7 +29,7 @@ export class Cat {
 }
 ```
 
-Where `cats` is the Couchbase bucket name.
+Where `cats` is the Couchbase bucket name (optional).
 
 Then, we need to import `CouchbaseModule` in our root `AppModule`:
 
@@ -37,7 +43,16 @@ import { CouchbaseModule } from '@scalio-oss/nest-couchbase';
       url: 'couchbase://127.0.0.1',
       username: 'couchbase',
       password: 'couchbase',
-      bucket: 'test',
+      defaultBucket: {
+        name: 'test',
+        password: 'password',
+      },
+      buckets: [
+        {
+          name: 'another_bucket',
+          password: 'another_password',
+        },
+      ],
     }),
   ],
 })
@@ -89,9 +104,12 @@ export class CatsService {
 
 Created by [@zMotivat0r](https://github.com/zMotivat0r) @ [Scalio](https://scal.io/)
 
+## About us
+
 <p align="center">
     <br/>
     <a href="https://scal.io/">
-        <img src="https://raw.githubusercontent.com/scalio/bazel-status/master/assets/scalio-logo.svg?sanitize=true"/>
+        <img src="https://raw.githubusercontent.com/scalio/bazel-status/master/assets/scalio-logo.svg?sanitize=true" />
     </a>
+    <br/>
 </p>

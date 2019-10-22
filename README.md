@@ -7,6 +7,7 @@
 </p>
 
 &nbsp;
+
 ## Installation
 
 ```bash
@@ -28,7 +29,7 @@ export class Cat {
 }
 ```
 
-Where `cats` is the Couchbase bucket name.
+Where `cats` is the Couchbase bucket name (optional).
 
 Then, we need to import `CouchbaseModule` in our root `AppModule`:
 
@@ -42,7 +43,16 @@ import { CouchbaseModule } from '@scalio-oss/nest-couchbase';
       url: 'couchbase://127.0.0.1',
       username: 'couchbase',
       password: 'couchbase',
-      bucket: 'test',
+      defaultBucket: {
+        name: 'test',
+        password: 'password',
+      },
+      buckets: [
+        {
+          name: 'another_bucket',
+          password: 'another_password',
+        },
+      ],
     }),
   ],
 })
@@ -94,8 +104,8 @@ export class CatsService {
 
 Created by [@zMotivat0r](https://github.com/zMotivat0r) @ [Scalio](https://scal.io/)
 
-
 ## About us
+
 <p align="center">
     <br/>
     <a href="https://scal.io/">

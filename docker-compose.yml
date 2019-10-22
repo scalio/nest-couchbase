@@ -13,7 +13,7 @@ volumes:
 
 services:
   couchbase:
-    container_name: couchbase
+    container_name: nest_couchbase
     image: couchbase:community
     volumes:
       - type: volume

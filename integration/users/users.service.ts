@@ -8,6 +8,6 @@ export class UsersService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
   async get(id: string) {
-    return this.repo.getFlat(id);
+    return (this.repo as any).getFlat(id);
   }
 }

@@ -27,12 +27,12 @@ describe('#couchbase', () => {
       conn = await CouchbaseConnectionFactory.create(config);
       mocked = await CouchbaseConnectionFactory.create({ ...config, mock: true });
       await removeBuckets();
-      await conn.createBucket(config.bucket, bucketOptions);
+      await conn.createBucket(config.defaultBucket.name, bucketOptions);
       await sleep(3500);
     });
 
     afterAll(async () => {
-      const [_, bucket] = await conn.getBucket(config.bucket);
+      const [_, bucket] = await conn.getBucket(config.defaultBucket.name);
       bucket.disconnect();
       await removeBuckets();
     });
@@ -49,14 +49,6 @@ describe('#couchbase', () => {
         const [err] = await flattenPromise(CouchbaseRepositoryFactory.create)(conn);
         expect(err).toBeInstanceOf(Error);
       });
-      it('should throw an error, 3', async () => {
-        class InvalidTestEntity {}
-        const [err] = await flattenPromise(CouchbaseRepositoryFactory.create)(
-          conn,
-          InvalidTestEntity,
-        );
-        expect(err).toBeInstanceOf(CouchbaseException);
-      });
       it('should throw an error, 4', async () => {
         @Entity('invalid')
         class InvalidTestEntity {}
@@ -66,8 +58,15 @@ describe('#couchbase', () => {
         );
         expect(err).toBeInstanceOf(Error);
       });
-      it('should create new Repository', async () => {
+      it('should create new Repository, 1', async () => {
         const repo = await CouchbaseRepositoryFactory.create(conn, Cat);
+        expect(repo).toBeDefined();
+        expect(typeof repo).toBe('object');
+        expect(repo.entity).toBeDefined();
+      });
+      it('should create new Repository, 2', async () => {
+        class TestEntity {}
+        const repo = await CouchbaseRepositoryFactory.create(conn, TestEntity);
         expect(repo).toBeDefined();
         expect(typeof repo).toBe('object');
         expect(repo.entity).toBeDefined();

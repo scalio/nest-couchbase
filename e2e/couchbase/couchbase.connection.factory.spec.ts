@@ -47,13 +47,19 @@ describe('#couchbase', () => {
 
       describe('#createBucket', () => {
         it('should create a bucket', async () => {
-          const [err, ok] = await conn.createBucket(config.bucket, bucketOptions);
+          const [err, ok] = await conn.createBucket(
+            config.defaultBucket.name,
+            bucketOptions,
+          );
           expect(err).toBeUndefined();
           expect(ok).toBe(true);
           await sleep(3500);
         });
         it('should return an error', async () => {
-          const [err, _] = await conn.createBucket(config.bucket, bucketOptions);
+          const [err, _] = await conn.createBucket(
+            config.defaultBucket.name,
+            bucketOptions,
+          );
           expect(err).toBeInstanceOf(Error);
         });
       });
@@ -71,12 +77,12 @@ describe('#couchbase', () => {
           expect(err).toBeInstanceOf(Error);
         });
         it('should return a bucket', async () => {
-          const [_, bucket] = await conn.getBucket(config.bucket);
+          const [_, bucket] = await conn.getBucket(config.defaultBucket.name);
           expect(bucket).toBeDefined();
           bucket.disconnect();
         });
         it('should return a bucket with mock', async () => {
-          const [_, bucket] = await mocked.getBucket(config.bucket);
+          const [_, bucket] = await mocked.getBucket(config.defaultBucket.name);
           expect(bucket).toBeDefined();
         });
       });
@@ -87,7 +93,7 @@ describe('#couchbase', () => {
           expect(err).toBeInstanceOf(Error);
         });
         it('should remove a bucket', async () => {
-          const [_, ok] = await conn.removeBucket(config.bucket);
+          const [_, ok] = await conn.removeBucket(config.defaultBucket.name);
           expect(ok).toBe(true);
         });
       });
