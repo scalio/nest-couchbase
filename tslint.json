@@ -6,7 +6,8 @@
     "object-literal-sort-keys": false,
     "member-access": false,
     "no-implicit-dependencies": false,
-    "member-ordering": false
+    "member-ordering": false,
+    "only-arrow-functions": false
   },
   "rulesDirectory": []
 }

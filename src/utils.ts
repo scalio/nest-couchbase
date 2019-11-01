@@ -1,6 +1,6 @@
 import { oO } from '@zmotivat0r/o0';
 
-export function promisify(fn: Function, ctx: any): Function {
+export function promisify(fn: any, ctx: any): any {
   return function(...args: any[]): Promise<any> {
     return new Promise((resolve, reject) => {
       fn.apply(ctx, [
@@ -17,9 +17,9 @@ export function promisify(fn: Function, ctx: any): Function {
   };
 }
 
-export function flattenPromise(promise: Function): Function {
+export function flattenPromise(promise: any): any {
   return async function(...args: any[]): Promise<any[]> {
-    return await oO(promise(...args));
+    return oO(promise(...args));
   };
 }
 
