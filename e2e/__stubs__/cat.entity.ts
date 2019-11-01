@@ -1,7 +1,6 @@
 import { Entity } from '../../src/couchbase';
-import { config } from './config';
 
-@Entity(config.bucket)
+@Entity()
 export class Cat {
   name: string;
 }
