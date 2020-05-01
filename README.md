@@ -11,7 +11,7 @@
 ## Installation
 
 ```bash
-$ npm i @scalio-oss/nest-couchbase couchbase
+$ npm i @scalio-oss/nest-couchbase couchbase@2.6.5
 ```
 
 ## Usage
@@ -93,6 +93,12 @@ export class CatsService {
   findOne(id: string): Promise<Cat> {
     return this.catsRepository.get(id);
   }
+  
+  upsert(key: string, cat: Cat): Promise<Cat> {
+    return (this.repositoryCacheLike as any).upsert(key, cat)
+  }
+  
+  
 }
 ```
 
