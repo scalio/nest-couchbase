@@ -39,7 +39,7 @@
     "@types/jest": "24.0.15",
     "@types/node": "12.6.8",
     "@zmotivat0r/o0": "1.0.2",
-    "class-transformer": "0.2.3",
+    "class-transformer": "0.3.1",
     "commitizen": "4.0.3",
     "couchbase": "2.6.5",
     "coveralls": "3.0.5",
